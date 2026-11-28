@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
 import userEvent from '@testing-library/user-event';
@@ -121,5 +121,22 @@ describe('<Tag /> onClick, onDelete & href spec', () => {
     const aTag = screen.getByRole('link');
     expect(linkContainer).toContainElement(aTag);
     expect(aTag).toHaveAttribute('href', 'https://hds.hel.fi');
+  });
+
+  it('keeps focus on the tag when the parent re-renders after a click', async () => {
+    const CountingTag = () => {
+      const [count, setCount] = useState(0);
+      return (
+        <Tag data-testid="counting" onClick={() => setCount(count + 1)}>
+          {`Clicked ${count} times`}
+        </Tag>
+      );
+    };
+    render(<CountingTag />);
+    const tag = screen.getByTestId('counting');
+    await userEvent.click(tag);
+    expect(screen.getByText('Clicked 1 times')).toBeInTheDocument();
+    expect(screen.getByTestId('counting')).toBe(tag);
+    expect(tag).toHaveFocus();
   });
 });

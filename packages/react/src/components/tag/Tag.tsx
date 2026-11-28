@@ -161,32 +161,6 @@ export const Tag = ({
     }
   };
 
-  const LinkWrapper: React.FC<React.PropsWithChildren> = (props) => {
-    return (
-      <a
-        ref={ref as React.Ref<HTMLAnchorElement>}
-        className={classNames(containerClassName, styles.link)}
-        href={href}
-        {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-      >
-        {props.children}
-      </a>
-    );
-  };
-
-  const Wrapper: React.FC<React.PropsWithChildren> = (props) => {
-    return (
-      <div
-        className={containerClassName}
-        ref={ref as React.Ref<HTMLDivElement>}
-        {...(hasAction && { tabIndex: 0, role, onClick: onAction, onKeyDown })}
-        {...(rest as React.HTMLAttributes<HTMLDivElement>)}
-      >
-        {props.children}
-      </div>
-    );
-  };
-
   const content = (
     <>
       {iconElementStart}
@@ -196,5 +170,30 @@ export const Tag = ({
     </>
   );
 
-  return href ? <LinkWrapper>{content}</LinkWrapper> : <Wrapper>{content}</Wrapper>;
+  // The elements are rendered directly instead of with components defined inside Tag.
+  // A component defined during render is a new component type on every render, so React
+  // would recreate the element and the tag would lose its focus.
+  if (href) {
+    return (
+      <a
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        className={classNames(containerClassName, styles.link)}
+        href={href}
+        {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <div
+      className={containerClassName}
+      ref={ref as React.Ref<HTMLDivElement>}
+      {...(hasAction && { tabIndex: 0, role, onClick: onAction, onKeyDown })}
+      {...(rest as React.HTMLAttributes<HTMLDivElement>)}
+    >
+      {content}
+    </div>
+  );
 };

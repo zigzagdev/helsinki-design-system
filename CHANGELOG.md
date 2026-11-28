@@ -31,7 +31,7 @@ Changes that are not related to specific components
 
 #### Fixed
 
-- [Component] What bugs/typos are fixed?
+- [Tag] The tag element is no longer recreated when the tag re-renders, so a clickable tag keeps its focus after it is clicked.
 
 ### Core
 
